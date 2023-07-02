@@ -28,13 +28,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy the terraform template in vm.tf to create a vm using hashicorp/setup-terraform@v1 action. 
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.14.7
-      - run: terraform init ./Code
-      - run: terraform plan ./Code
-      - run: terraform apply -auto-approve ./Code
+      
              
       # Depoly the ansible playbook to configure the vm
       - name: Install Ansible
@@ -43,12 +37,9 @@ jobs:
           sudo apt install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible
-      - name: Install Azure.azcollection
-        run: |
-          ansible-galaxy collection install azure.azcollection
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ./Code/hosts ./Code/vm.yml
+          ansible-playbook ./Code/vm.yml
           
         
       # Runs a single command using the runners shell
