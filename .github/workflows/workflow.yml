@@ -57,6 +57,10 @@ jobs:
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      # import msrestazure
+      - name: Install msrestazure
+        run: |
+          pip3 install msrestazure
       - name: Install Ansible Azure Module
         run: |
           pip3 install ansible[azure]

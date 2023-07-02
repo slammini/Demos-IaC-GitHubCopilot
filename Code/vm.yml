@@ -2,6 +2,7 @@
 # Create a new resource group, a new virtual network, a new subnet, a new public IP address, a new network interface, and a new virtual machine with basic configuration
 # The playbook should be idempotent, meaning that it should not fail if the resource group, virtual network, subnet, public IP address, network interface, and virtual machine already exist
 
+ 
 #variables
 - name: Define the variables needed to create the resources
   hosts: localhost
