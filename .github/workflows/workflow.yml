@@ -28,18 +28,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy the terraform template in vm.tf to create a vm using hashicorp/setup-terraform@v1 action. It should be indepotent
+      # Deploy the terraform template in vm.tf to create a vm using hashicorp/setup-terraform@v1 action. 
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.14.7
-      - name: Terraform Init
-        run: terraform init ./Code
-      - name: Terraform Validate  
-        run: terraform validate ./Code
-      - name: Terraform Plan
-        run: terraform plan ./Code
-      - name: Terraform Apply
-        run: terraform apply -auto-approve ./Code
+      - run: terraform init ./Code
+      - run: terraform plan ./Code
+      - run: terraform apply -auto-approve ./Code
              
       # Depoly the ansible playbook to configure the vm
       - name: Install Ansible
