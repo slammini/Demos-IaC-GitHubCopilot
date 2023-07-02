@@ -58,6 +58,7 @@ jobs:
       - name: Install Ansible Azure Module
         run: |
           pip3 install ansible[azure]
+          pip3 install msrestazure
       - name: Install Azure Collection
         run: |
           ansible-galaxy collection install azure.azcollection
