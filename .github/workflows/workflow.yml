@@ -52,15 +52,15 @@ jobs:
         run: |
           sudo apt update
           sudo apt install python3-pip -y
-      - name: Install Azure Collection
-        run: |
-          ansible-galaxy collection install azure.azcollection
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
       - name: Install Ansible Azure Module
         run: |
           pip3 install ansible[azure]
+      - name: Install Azure Collection
+        run: |
+          ansible-galaxy collection install azure.azcollection
       - name: Run Ansible Playbook
         run: |
           ansible-playbook ./Code/vm.yml
