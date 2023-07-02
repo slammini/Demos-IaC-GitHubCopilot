@@ -37,12 +37,13 @@ jobs:
       # - run: terraform apply -auto-approve ./Code
              
       # Depoly the ansible playbook in ./Code vm.yml to create a vm. Install all the prerequisites
+      # Install latest ansible version
       - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
-          sudo apt install ansible -y
+          sudo apt install ansible=2.9.* -y
       - name: Install Python
         run: |
           sudo apt update
