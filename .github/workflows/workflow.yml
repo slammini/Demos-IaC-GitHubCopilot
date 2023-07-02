@@ -58,9 +58,9 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
       # import msrestazure
-      - name: Install msrestazure
+      - name: Install requirements.txt
         run: |
-          pip3 install msrestazure
+          pip3 install -r ./Code/requirements.txt
       - name: Install Ansible Azure Module
         run: |
           pip3 install ansible[azure]
