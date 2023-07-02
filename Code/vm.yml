@@ -1,11 +1,8 @@
-# Implement an Ansible playbook to create a new virtual machine in Azure with basic configuration
-# Create a new resource group, a new virtual network, a new subnet, a new public IP address, a new network interface, and a new virtual machine
-# The playbook should be idempotent, meaning that it should not fail if the resource group, virtual network, subnet, public IP address, network interface, and virtual machine already exist
-#variables
 - name: Define the variables needed to create the resources
   hosts: localhost
   connection: local
   gather_facts: false
+
   vars:
     resource_group: "test-IaC-Ansible-GitHubActions"
     location: "westeurope"
@@ -24,58 +21,57 @@
     image_sku: "18.04-LTS"
     image_version: "latest"
 
-#tasks
-- name: Create a new resource group
-  azure_rm_resourcegroup:
-    name: "{{ resource_group }}"
-    location: "{{ location }}"
-  register: rg
+  tasks:
+    - name: Create a new resource group
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+      register: rg
 
-- name: Create a new virtual network
-  azure_rm_virtualnetwork:
-    resource_group: "{{ resource_group }}"
-    name: "{{ vnet_name }}"
-    address_prefixes_cidr:
-      - "{{ vnet_address_prefix }}"
-  register: vnet
+    - name: Create a new virtual network
+      azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vnet_name }}"
+        address_prefixes_cidr:
+          - "{{ vnet_address_prefix }}"
+      register: vnet
 
-- name: Create a new subnet
-  azure_rm_subnet:
-    resource_group: "{{ resource_group }}"
-    name: "{{ subnet_name }}"
-    address_prefix_cidr: "{{ subnet_address_prefix }}"
-    virtual_network: "{{ vnet_name }}"
-  register: subnet
+    - name: Create a new subnet
+      azure_rm_subnet:
+        resource_group: "{{ resource_group }}"
+        name: "{{ subnet_name }}"
+        address_prefix_cidr: "{{ subnet_address_prefix }}"
+        virtual_network: "{{ vnet_name }}"
+      register: subnet
 
-- name: Create a new public IP address
-  azure_rm_publicipaddress:
-    resource_group: "{{ resource_group }}"
-    allocation_method: Static
-    name: "{{ public_ip_name }}"
-  register: public_ip
+    - name: Create a new public IP address
+      azure_rm_publicipaddress:
+        resource_group: "{{ resource_group }}"
+        allocation_method: Static
+        name: "{{ public_ip_name }}"
+      register: public_ip
 
-- name: Create a new network interface
-  azure_rm_networkinterface:
-    resource_group: "{{ resource_group }}"
-    name: "{{ nic_name }}"
-    virtual_network: "{{ vnet_name }}"
-    subnet_name: "{{ subnet_name }}"
-    public_ip_name: "{{ public_ip_name }}"
-  register: nic
+    - name: Create a new network interface
+      azure_rm_networkinterface:
+        resource_group: "{{ resource_group }}"
+        name: "{{ nic_name }}"
+        virtual_network: "{{ vnet_name }}"
+        subnet_name: "{{ subnet_name }}"
+        public_ip_name: "{{ public_ip_name }}"
+      register: nic
 
-- name: Create a new virtual machine
-  azure_rm_virtualmachine:
-    resource_group: "{{ resource_group }}"
-    name: "{{ vm_name }}"
-    vm_size: "{{ vm_size }}"
-    admin_username: "{{ admin_username }}"
-    admin_password: "{{ admin_password }}"
-    image:
-      offer: "{{ image_offer }}"
-      publisher: "{{ image_publisher }}"
-      sku: "{{ image_sku }}"
-      version: "{{ image_version }}"
-    network_interfaces:
-      - "{{ nic_name }}"
-  register: vm
-  
+    - name: Create a new virtual machine
+      azure_rm_virtualmachine:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vm_name }}"
+        vm_size: "{{ vm_size }}"
+        admin_username: "{{ admin_username }}"
+        admin_password: "{{ admin_password }}"
+        image:
+          offer: "{{ image_offer }}"
+          publisher: "{{ image_publisher }}"
+          sku: "{{ image_sku }}"
+          version: "{{ image_version }}"
+        network_interfaces:
+          - "{{ nic_name }}"
+      register: vm
