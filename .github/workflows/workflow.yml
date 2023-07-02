@@ -43,6 +43,9 @@ jobs:
           sudo apt install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible
+      - name: Install Azure.azcollection
+        run: |
+          ansible-galaxy collection install azure.azcollection
       - name: Run Ansible Playbook
         run: |
           ansible-playbook -i ./Code/hosts ./Code/vm.yml
