@@ -33,13 +33,13 @@ jobs:
         with:
           terraform_version: 0.14.7
       - name: Terraform Init
-        run: terraform init
+        run: terraform init ./Code
       - name: Terraform Validate  
-        run: terraform validate
+        run: terraform validate ./Code
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan ./Code
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve ./Code
              
       # Depoly the ansible playbook to configure the vm
       - name: Install Ansible
