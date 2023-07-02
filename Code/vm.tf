@@ -2,9 +2,7 @@
 # Create a resource group, a virtual netwrok, a subnet, a public IP address, a network interface, a virtual machine
 
 #Provider
-provider "azurerm" {
-  features {}
-}
+
 
 #Resource Group
 resource "azurerm_resource_group" "rg" {
