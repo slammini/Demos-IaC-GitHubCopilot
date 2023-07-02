@@ -28,23 +28,43 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      
+      # # Deploy the terraform template in vm.tf to create a vm using hashicorp/setup-terraform@v1 action. 
+      # - uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: 0.14.7
+      # - run: terraform init ./Code
+      # - run: terraform plan ./Code
+      # - run: terraform apply -auto-approve ./Code
              
-      # Depoly the ansible playbook to configure the vm
+      # Depoly the ansible playbook in ./Code vm.yml to create a vm. Install all the prerequisites
       - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
-          sudo apt install ansible
-      - name: Install Azure.azcollection
+          sudo apt install ansible -y
+      - name: Install Python
+        run: |
+          sudo apt update
+          sudo apt install python3
+      - name: Install pip
+        run: |
+          sudo apt update
+          sudo apt install python3-pip -y
+      - name: Install Azure Collection
         run: |
           ansible-galaxy collection install azure.azcollection
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      - name: Install Ansible Azure Module
+        run: |
+          pip3 install ansible[azure]
       - name: Run Ansible Playbook
         run: |
           ansible-playbook ./Code/vm.yml
-          
-        
+           
+                  
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
