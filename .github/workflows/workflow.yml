@@ -35,7 +35,18 @@ jobs:
       - run: terraform init ./Code
       - run: terraform plan ./Code
       - run: terraform apply -auto-approve ./Code
-     
+
+      # Depoly the ansible playbook to configure the vm 
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install software-properties-common
+          sudo apt-add-repository --yes --update ppa:ansible/ansible
+          sudo apt install ansible
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i ./Code/hosts ./Code/vm.yml
+          
         
       # Runs a single command using the runners shell
       - name: Run a one-line script
