@@ -41,7 +41,6 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
              
-
       # Depoly the ansible playbook to configure the vm
       - name: Install Ansible
         run: |
