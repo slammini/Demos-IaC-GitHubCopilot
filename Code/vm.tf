@@ -1,4 +1,4 @@
-# Create a new Azure virtual machine with password authentication and basic configuration
+# Create a new Azure virtual machine with password authentication
 
 # Provider
 provider "azurerm" {
@@ -48,7 +48,7 @@ resource "azurerm_public_ip" "publicip" {
   allocation_method   = "Dynamic"
 }
 
-# Create virtual machine
+# Create virtual machine with basic configuration
 resource "azurerm_virtual_machine" "vm" {
   name                  = "Cloudchampion-TerraformVM-Test-vm"
   location              = azurerm_resource_group.rg.location
@@ -57,9 +57,9 @@ resource "azurerm_virtual_machine" "vm" {
   vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2019-Datacenter"
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
     version   = "latest"
   }
 
@@ -67,7 +67,7 @@ resource "azurerm_virtual_machine" "vm" {
     name              = "Cloudchampion-TerraformVM-Test-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
@@ -76,12 +76,11 @@ resource "azurerm_virtual_machine" "vm" {
     admin_password = "Cloudchampion123!"
   }
 
-  os_profile_windows_config {
-    provision_vm_agent = true
+  os_profile_linux_config {
+    disable_password_authentication = false
   }
 
-  boot_diagnostics {
-    enabled     = true
-    storage_uri = azurerm_storage_account.storageaccount.primary_blob_endpoint
+  tags = {
+    environment = "Terraform Demo"
   }
 }
