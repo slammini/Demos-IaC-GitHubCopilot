@@ -8,15 +8,15 @@
   connection: local
   gather_facts: false
   vars:
-    resource_group: "borrameya-rg-ansible"
+    resource_group: "CloudchampionTest-rg-ansible"
     location: "westeurope"
-    vnet_name: "borrameya-vnet-ansible"
+    vnet_name: "CloudchampionTest-vnet-ansible"
     vnet_address_prefix: "10.0.0.0/16"
-    subnet_name: "borrameya-subnet-ansible"
+    subnet_name: "CloudchampionTest-subnet-ansible"
     subnet_address_prefix: "10.0.0.0/24"
-    public_ip_name: "borrameya-pip-ansible"
-    nic_name: "borrameya-nic-ansible"
-    vm_name: "borrameya-vm-ansible"
+    public_ip_name: "CloudchampionTest-pip-ansible"
+    nic_name: "CloudchampionTest-nic-ansible"
+    vm_name: "CloudchampionTest-vm-ansible"
     vm_size: "Standard_B1s"
     admin_username: "Sara"
     ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCjpHB0CiCd+h6YhQt2C87OH5KwVRtpcRO/fiIPXTUKStLkv0zFCTbnHGXcn/Dw5SB7/z0A0LqqKLlAM5aNgsUKHcVdlJOwHXWr9ghnlQcjeWX4GwxN0bq6WydTNT0QXLIua5f/HNPNkzUZLEm2N/yt26owN3EVcKEKnIOKCTr6Pn3qeF2SUHMVG0HV/Ge5lQ+6lTm6Mi+vOZ2TIfOaIk+fXwvfmOkAr43S7xlnlns0FbuNzr+Ug9zhBXI37kB93UnEdY7xWqhyMvoPEliwpyKAnDH0NuTHWocI/7m6rWWWx1TMZVTLmF8ltou65+BoSa1J2eSDJPEih5NhH7g8UKyezX7IYIxMgySQsi9tN6W3j/YtTNFMv2hLdStt6VLjGho56J5b+FLZ9Gj/6H4TZ/17Zmb9yagmy9YQRtWuY8w83VPgR7H3fCLLXsT0Xpw0F5DZUxs8wIdWOKKjfl1zQRhEUAkvpEZFttjzICpku0Y8dH56803gcEzk6UknGB6BtZM/JkDVnoe2n2LKwDW/fzhMSa8i4CF3POQs8IbuldIuGp9smjRvQCd25rd6HS3Ph/sAl4xr9n1T6Q7NAWAfpFwMnKgdaNpEfSMDEfgqQiL45YAcZhHrGMwqBLEsZl9pk6d2mhYscstU6bbSUvsq+LLjNLH+IO8XMPm17T2ijTa6LQ== sara@DESKTOP-SGE6CIV"
@@ -69,6 +69,7 @@
         publisher: "{{ image_publisher }}"
         sku: "{{ image_sku }}"
         version: "{{ image_version }}"
+  
         
 
 
