@@ -85,4 +85,3 @@ resource "azurerm_virtual_machine" "vm" {
     environment = "Terraform Demo"
   }
 }
-```
