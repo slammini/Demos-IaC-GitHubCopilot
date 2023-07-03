@@ -36,35 +36,35 @@ jobs:
       # - run: terraform plan ./Code
       # - run: terraform apply -auto-approve ./Code
              
-      # Depoly the ansible playbook in ./Code vm.yml to create a vm. Install all the prerequisites
-      # Install latest ansible version
-      - name: Install Ansible
+      # Depoly the ansible playbook in ./Code/vm.yml to create an Azure storage account
+      # Install all the prerequisites for ansible and azure modules like azure.azcollection.azure_rm_storageaccount module
+      - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install software-properties-common
+          sudo apt-get update
+          sudo apt-get install software-properties-common
           sudo apt-add-repository --yes --update ppa:ansible/ansible
-          sudo apt install ansible -y
-      - name: Install Python
-        run: |
-          sudo apt update
-          sudo apt install python3
-      - name: Install pip
-        run: |
-          sudo apt update
-          sudo apt install python3-pip -y
-      - name: Install Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      - name: Install Ansible Azure Module
-        run: |
-          pip3 install ansible[azure]
-          pip3 install msrestazure
-      - name: Install Azure Collection
-        run: |
+          sudo apt-get install ansible -y
           ansible-galaxy collection install azure.azcollection
+          ansible-galaxy collection install community.azure
+          ansible-galaxy collection install community.general
+          ansible-galaxy collection install azure.azcollection
+          ansible-galaxy collection install azure.azcollection.azure_rm_storageaccount
+          ansible-galaxy collection install azure.azcollection.azure_rm_resource
+          ansible-galaxy collection install azure.azcollection.azure_rm_network
+          ansible-galaxy collection install azure.azcollection.azure_rm_compute
+          ansible-galaxy collection install azure.azcollection.azure_rm_security
+          ansible-galaxy collection install azure.azcollection.azure_rm_keyvault
+          ansible-galaxy collection install azure.azcollection.azure_rm_containerinstance
+          ansible-galaxy collection install azure.azcollection.azure_rm_containerregistry
+          ansible-galaxy collection install azure.azcollection.azure_rm_dns
+          ansible-galaxy collection install azure.azcollection.azure_rm_eventgrid
+          ansible-galaxy collection install azure.azcollection.azure_rm_eventhub
+          
+      # Run the ansible playbook to create an Azure storage account
       - name: Run Ansible Playbook
         run: |
           ansible-playbook ./Code/vm.yml
+          
            
                   
       # Runs a single command using the runners shell
