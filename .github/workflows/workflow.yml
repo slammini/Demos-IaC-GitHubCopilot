@@ -45,10 +45,10 @@ jobs:
           sudo apt-add-repository --yes --update ppa:ansible/ansible
           sudo apt-get install ansible -y
           ansible-galaxy collection install azure.azcollection
+          ansible-galaxy collection install azure.azcollection.azure_rm_storageaccount
           ansible-galaxy collection install community.azure
           ansible-galaxy collection install community.general
-          ansible-galaxy collection install azure.azcollection
-          
+          ansible-galaxy collection install azure.azcollection          
       # Run the ansible playbook to create an Azure storage account
       - name: Run Ansible Playbook
         run: |
