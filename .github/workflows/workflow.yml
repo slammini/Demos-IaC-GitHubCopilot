@@ -52,7 +52,7 @@ jobs:
       # Run the ansible playbook to create an Azure storage account
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook ./Code/vm.yml
+          ansible-playbook ./Code/HelloAnsible.yml
           
            
                   
