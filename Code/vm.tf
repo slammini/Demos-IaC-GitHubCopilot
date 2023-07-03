@@ -39,7 +39,7 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Virtual Machine
+# Virtual Machine with password authentication and basic configuration
 resource "azurerm_virtual_machine" "vm" {
   name                  = "vm-terraform-azure-sisnet"
   location              = azurerm_resource_group.rg.location
@@ -63,14 +63,11 @@ resource "azurerm_virtual_machine" "vm" {
 
   os_profile {
     computer_name  = "vm-terraform-azure-sisnet"
-    admin_username = "adminuser"
+    admin_username = "azureuser"
+    admin_password = "Password1234!"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = true
-    ssh_keys {
-      path     = "/home/adminuser/.ssh/authorized_keys"
-      key_data = file("~/.ssh/id_rsa.pub")
-    }
+    disable_password_authentication = false
   }
 }
