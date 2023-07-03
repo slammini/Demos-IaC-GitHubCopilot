@@ -1,63 +1,75 @@
-# - name: Test Ansible connection
-#   hosts: localhost
-#   gather_facts: false
+# Implement an Ansible playbook to create a new virtual machine in Azure with basic configuration
+# Create a new resource group, a new virtual network, a new subnet, a new public IP address, a new network interface, and a new virtual machine with basic configuration
+# The playbook should be idempotent, meaning that it should not fail if the resource group, virtual network, subnet, public IP address, network interface, and virtual machine already exist
 
-#   tasks:
-#     - name: Print a message
-#       debug:
-#         msg: "Ansible is working correctly!"
-
-
-# Create and ansible playbook to deploy an Azure Storage Account. Install all the required modules and run the playbook.
-# Make sure you have the required modules installed. 
-# Make sure you are using the correct module to deploy the storage account.
-
-- name: Create a resource group
+#variables
+- name: Define the variables needed to create the resources
   hosts: localhost
   connection: local
+  gather_facts: false
+  vars:
+    resource_group: "borrameya-rg-ansible"
+    location: "westeurope"
+    vnet_name: "borrameya-vnet-ansible"
+    vnet_address_prefix: "10.0.0.0/16"
+    subnet_name: "borrameya-subnet-ansible"
+    subnet_address_prefix: "10.0.0.0/24"
+    public_ip_name: "borrameya-pip-ansible"
+    nic_name: "borrameya-nic-ansible"
+    vm_name: "borrameya-vm-ansible"
+    vm_size: "Standard_B1s"
+    admin_username: "Sara"
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCjpHB0CiCd+h6YhQt2C87OH5KwVRtpcRO/fiIPXTUKStLkv0zFCTbnHGXcn/Dw5SB7/z0A0LqqKLlAM5aNgsUKHcVdlJOwHXWr9ghnlQcjeWX4GwxN0bq6WydTNT0QXLIua5f/HNPNkzUZLEm2N/yt26owN3EVcKEKnIOKCTr6Pn3qeF2SUHMVG0HV/Ge5lQ+6lTm6Mi+vOZ2TIfOaIk+fXwvfmOkAr43S7xlnlns0FbuNzr+Ug9zhBXI37kB93UnEdY7xWqhyMvoPEliwpyKAnDH0NuTHWocI/7m6rWWWx1TMZVTLmF8ltou65+BoSa1J2eSDJPEih5NhH7g8UKyezX7IYIxMgySQsi9tN6W3j/YtTNFMv2hLdStt6VLjGho56J5b+FLZ9Gj/6H4TZ/17Zmb9yagmy9YQRtWuY8w83VPgR7H3fCLLXsT0Xpw0F5DZUxs8wIdWOKKjfl1zQRhEUAkvpEZFttjzICpku0Y8dH56803gcEzk6UknGB6BtZM/JkDVnoe2n2LKwDW/fzhMSa8i4CF3POQs8IbuldIuGp9smjRvQCd25rd6HS3Ph/sAl4xr9n1T6Q7NAWAfpFwMnKgdaNpEfSMDEfgqQiL45YAcZhHrGMwqBLEsZl9pk6d2mhYscstU6bbSUvsq+LLjNLH+IO8XMPm17T2ijTa6LQ== sara@DESKTOP-SGE6CIV"
+    image_offer: "UbuntuServer"
+    image_publisher: "Canonical"
+    image_sku: "18.04-LTS"
+    image_version: "latest"
   tasks:
-    - name: Create resource group
-      azure_rm_resourcegroup:
-        name: ansible-rg
-        location: eastus
-        tags:
-          environment: test
-          department: it
-          project: ansible
-      register: rg
-
-- name: Create a storage account
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Create storage account
-      azure_rm_storageaccount:
-        resource_group: ansible-rg
-        name: ansiblestorageaccount
-        account_type: Standard_LRS
-        location: eastus
-        tags:
-          environment: test
-          department: it
-          project: ansible
-      register: sa
-
-- name: Create a storage container
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Create storage container
-      azure_rm_storagecontainer:
-        resource_group: ansible-rg
-        storage_account_name: ansiblestorageaccount
-        name: ansiblestoragecontainer
-        container_access_type: private
-        state: present
-        tags:
-          environment: test
-          department: it
-          project: ansible
-      register: sc
+  - name: Create a resource group
+    azure_rm_resourcegroup:
+      name: "{{ resource_group }}"
+      location: "{{ location }}"
+  - name: Create a virtual network
+    azure_rm_virtualnetwork:
+      resource_group: "{{ resource_group }}"
+      name: "{{ vnet_name }}"
+      address_prefixes_cidr:
+      - "{{ vnet_address_prefix }}"
+  - name: Create a subnet
+    azure_rm_subnet:
+      resource_group: "{{ resource_group }}"
+      name: "{{ subnet_name }}"
+      address_prefix_cidr: "{{ subnet_address_prefix }}"
+      virtual_network: "{{ vnet_name }}"
+  - name: Create a public IP address
+    azure_rm_publicipaddress:
+      resource_group: "{{ resource_group }}"
+      allocation_method: Static
+      name: "{{ public_ip_name }}"
+  - name: Create a network interface
+    azure_rm_networkinterface:
+      resource_group: "{{ resource_group }}"
+      name: "{{ nic_name }}"
+      virtual_network: "{{ vnet_name }}"
+      subnet_name: "{{ subnet_name }}"
+      public_ip_name: "{{ public_ip_name }}"
+  - name: Create a virtual machine
+    azure_rm_virtualmachine:
+      resource_group: "{{ resource_group }}"
+      name: "{{ vm_name }}"
+      vm_size: "{{ vm_size }}"
+      admin_username: "{{ admin_username }}"
+      ssh_password_enabled: false
+      ssh_public_keys:
+      - path: /home/{{ admin_username }}/.ssh/authorized_keys
+        key_data: "{{ ssh_public_key }}"
+      network_interfaces: "{{ nic_name }}"
+      image:
+        offer: "{{ image_offer }}"
+        publisher: "{{ image_publisher }}"
+        sku: "{{ image_sku }}"
+        version: "{{ image_version }}"
+        
 
 
 
