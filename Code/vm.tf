@@ -5,52 +5,53 @@ provider "azurerm" {
   features {}
 }
 
-# Resource Group
+# Resource
 resource "azurerm_resource_group" "rg" {
-  name     = "Cloudchampion-TerraformVM-Test"
-  location = "West Europe"
+  name     = "Test-CC-TerraformVM"
+  location = "westeurope"
 }
 
-# Virtual Network
+# Create a virtual network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "Cloudchampion-TerraformVM-Test-vnet"
+  name                = "Test-CC-TerraformVM-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Subnet
+# Create a subnet
 resource "azurerm_subnet" "subnet" {
-  name                 = "Cloudchampion-TerraformVM-Test-subnet"
+  name                 = "Test-CC-TerraformVM-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.0.0/24"]
 }
 
-# Network Interface
-resource "azurerm_network_interface" "nic" {
-  name                = "Cloudchampion-TerraformVM-Test-nic"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "testconfiguration1"
-    subnet_id                     = azurerm_subnet.subnet.id
-    private_ip_address_allocation = "Dynamic"
-  }
-}
-
-# Public IP
+# Create a public IP address
 resource "azurerm_public_ip" "publicip" {
-  name                = "Cloudchampion-TerraformVM-Test-publicip"
+  name                = "Test-CC-TerraformVM-publicip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 }
 
-# Create virtual machine with basic configuration
+# Create newtork interface
+resource "azurerm_network_interface" "nic" {
+  name                = "Test-CC-TerraformVM-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "Test-CC-TerraformVM-nic-ipconfig"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.publicip.id
+  }
+}
+
+# Create a virtual machine with password authentication and basic configuration
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "Cloudchampion-TerraformVM-Test-vm"
+  name                  = "Test-CC-TerraformVM"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
@@ -64,16 +65,16 @@ resource "azurerm_virtual_machine" "vm" {
   }
 
   storage_os_disk {
-    name              = "Cloudchampion-TerraformVM-Test-osdisk"
+    name              = "Test-CC-TerraformVM-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
 
   os_profile {
-    computer_name  = "Cloudchampion-TerraformVM-Test-vm"
-    admin_username = "cloudchampion"
-    admin_password = "Cloudchampion123!"
+    computer_name  = "Test-CC-TerraformVM"
+    admin_username = "azureuser"
+    admin_password = "Password1234!"
   }
 
   os_profile_linux_config {
@@ -84,3 +85,4 @@ resource "azurerm_virtual_machine" "vm" {
     environment = "Terraform Demo"
   }
 }
+```
