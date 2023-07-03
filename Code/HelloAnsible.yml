@@ -1,9 +1,0 @@
-# Create an Ansible playbook that prints a message to the console
-
-- name: Print a message
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Print a message
-      debug:
-        msg: "Ansible is working correctly!"

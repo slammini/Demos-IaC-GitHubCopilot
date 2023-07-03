@@ -1,3 +1,5 @@
+# Create a new Azure virtual machine with password authentication and basic configuration
+
 # Provider
 provider "azurerm" {
   features {}
@@ -5,13 +7,13 @@ provider "azurerm" {
 
 # Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-terraform-azure-sisnet"
-  location = "westeurope"
+  name     = "Cloudchampion-TerraformVM-Test"
+  location = "West Europe"
 }
 
 # Virtual Network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-terraform-azure-sisnet"
+  name                = "Cloudchampion-TerraformVM-Test-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -19,54 +21,67 @@ resource "azurerm_virtual_network" "vnet" {
 
 # Subnet
 resource "azurerm_subnet" "subnet" {
-  name                 = "subnet-terraform-azure-sisnet"
-  address_prefixes     = ["10.0.1.0/24"]
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  name                 = "Cloudchampion-TerraformVM-Test-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.0.0/24"]
 }
 
 # Network Interface
 resource "azurerm_network_interface" "nic" {
-  name                = "nic-terraform-azure-sisnet"
+  name                = "Cloudchampion-TerraformVM-Test-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "ipconfig-terraform-azure-sisnet"
+    name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
-# Virtual Machine with password authentication and basic configuration
+# Public IP
+resource "azurerm_public_ip" "publicip" {
+  name                = "Cloudchampion-TerraformVM-Test-publicip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Dynamic"
+}
+
+# Create virtual machine
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "vm-terraform-azure-sisnet"
+  name                  = "Cloudchampion-TerraformVM-Test-vm"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
     version   = "latest"
   }
 
   storage_os_disk {
-    name              = "osdisk-terraform-azure-sisnet"
+    name              = "Cloudchampion-TerraformVM-Test-osdisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    managed_disk_type = "Premium_LRS"
   }
 
   os_profile {
-    computer_name  = "vm-terraform-azure-sisnet"
-    admin_username = "azureuser"
-    admin_password = "Password1234!"
+    computer_name  = "Cloudchampion-TerraformVM-Test-vm"
+    admin_username = "cloudchampion"
+    admin_password = "Cloudchampion123!"
   }
 
-  os_profile_linux_config {
-    disable_password_authentication = false
+  os_profile_windows_config {
+    provision_vm_agent = true
+  }
+
+  boot_diagnostics {
+    enabled     = true
+    storage_uri = azurerm_storage_account.storageaccount.primary_blob_endpoint
   }
 }
