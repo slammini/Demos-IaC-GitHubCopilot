@@ -53,6 +53,7 @@ jobs:
       - name: Run Ansible Playbook
         run: |
           ansible-playbook ./Code/HelloAnsible.yml
+          ansible-playbook ./Code/vm.yml
           
            
                   

@@ -8,58 +8,57 @@
 #         msg: "Ansible is working correctly!"
 
 
-# Create and ansible playbook to deploy an Azure Storage Account
+# Create and ansible playbook to deploy an Azure Storage Account. Install all the required modules and run the playbook.
+# Make sure you have the required modules installed. 
+# Make sure you are using the correct module to deploy the storage account.
+
+- name: Create a resource group
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create resource group
+      azure_rm_resourcegroup:
+        name: ansible-rg
+        location: eastus
+        tags:
+          environment: test
+          department: it
+          project: ansible
+      register: rg
+
 - name: Create a storage account
   hosts: localhost
   connection: local
-  vars:
-    resource_group: "test-IaC-Ansible-GitHubActions"
-    location: "westeurope"
-    storage_account: "test-IaC-Ansible-GitHubActions"
-    account_type: "Standard_LRS"
-    container_name: "test-IaC-Ansible-GitHubActionsr"
-    container_access_type: "private"
   tasks:
-    - name: Create a resource group
-      azure_rm_resourcegroup:
-        name: "{{ resource_group }}"
-        location: "{{ location }}"
-        tags:
-          environment: dev
-          dept: it
-          project: test
-      register: rg
-
-    - name: Create a storage account
+    - name: Create storage account
       azure_rm_storageaccount:
-        resource_group: "{{ resource_group }}"
-        name: "{{ storage_account }}"
-        account_type: "{{ account_type }}"
-        location: "{{ location }}"
+        resource_group: ansible-rg
+        name: ansiblestorageaccount
+        account_type: Standard_LRS
+        location: eastus
         tags:
-          environment: dev
-          dept: it
-          project: test
+          environment: test
+          department: it
+          project: ansible
       register: sa
 
-    - name: Create a storage container
+- name: Create a storage container
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create storage container
       azure_rm_storagecontainer:
-        resource_group: "{{ resource_group }}"
-        storage_account: "{{ storage_account }}"
-        name: "{{ container_name }}"
-        container_access_type: "{{ container_access_type }}"
+        resource_group: ansible-rg
+        storage_account_name: ansiblestorageaccount
+        name: ansiblestoragecontainer
+        container_access_type: private
         state: present
+        tags:
+          environment: test
+          department: it
+          project: ansible
       register: sc
 
-    - name: Print the resource group
-      debug:
-        var: rg
 
-    - name: Print the storage account
-      debug:
-        var: sa
 
-    - name: Print the storage container
-      debug:
-        var: sc
 
