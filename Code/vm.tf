@@ -1,80 +1,68 @@
-# Create a new Azure Virtual Machine with basic configuation and password based authentication using terraform
-# Create a resource group, a virtual netwrok, a subnet, a public IP address, a network interface, a virtual machine
-
-#Provider
+# Provider
 provider "azurerm" {
+  version = "=3.0.0"
   features {}
 }
 
-#Resource Group
+# Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "test-IaC-Terraform-GitHubActions"
+  name     = "rg-terraform-azure-sisnet"
   location = "westeurope"
 }
 
-#Virtual Network
+# Virtual Network
 resource "azurerm_virtual_network" "vnet" {
-  name                = "test-IaC-Terraform-GitHubActions-vnet"
+  name                = "vnet-terraform-azure-sisnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-#Subnet
+# Subnet
 resource "azurerm_subnet" "subnet" {
-  name                 = "test-IaC-Terraform-GitHubActions-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
+  name                 = "subnet-terraform-azure-sisnet"
+  address_prefixes     = ["10.0.1.0/24"]
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.0/24"]
+  resource_group_name  = azurerm_resource_group.rg.name
 }
 
-#Public IP
-resource "azurerm_public_ip" "publicip" {
-  name                = "test-IaC-Terraform-GitHubActions-publicip"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
-}
-
-#Network Interface
+# Network Interface
 resource "azurerm_network_interface" "nic" {
-  name                = "test-IaC-Terraform-GitHubActions-nic"
+  name                = "nic-terraform-azure-sisnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "test-IaC-Terraform-GitHubActions-nic-ipconfig"
+    name                          = "ipconfig-terraform-azure-sisnet"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.publicip.id
   }
 }
 
-#Virtual Machine
+# Virtual Machine
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "test-IaC-Terraform-GitHubActions-vm"
+  name                  = "vm-terraform-azure-sisnet"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
-  vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
+    sku       = "18.04-LTS"
     version   = "latest"
   }
 
   storage_os_disk {
-    name              = "test-IaC-Terraform-GitHubActions-osdisk"
+    name              = "osdisk-terraform-azure-sisnet"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
   }
 
   os_profile {
-    computer_name  = "test-IaC-Terraform-GitHubActions-vm"
-    admin_username = "testadmin"
+    computer_name  = "vm-terraform-azure-sisnet"
+    admin_username = "adminuser"
     admin_password = "Password1234!"
   }
 
@@ -82,6 +70,3 @@ resource "azurerm_virtual_machine" "vm" {
     disable_password_authentication = false
   }
 }
-
-
-
