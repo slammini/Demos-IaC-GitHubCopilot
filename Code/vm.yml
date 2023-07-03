@@ -1,8 +1,65 @@
-- name: Test Ansible connection
-  hosts: localhost
-  gather_facts: false
+# - name: Test Ansible connection
+#   hosts: localhost
+#   gather_facts: false
 
+#   tasks:
+#     - name: Print a message
+#       debug:
+#         msg: "Ansible is working correctly!"
+
+
+# Create and ansible playbook to deploy an Azure Storage Account
+- name: Create a storage account
+  hosts: localhost
+  connection: local
+  vars:
+    resource_group: "test-IaC-Ansible-GitHubActions"
+    location: "westeurope"
+    storage_account: "test-IaC-Ansible-GitHubActions"
+    account_type: "Standard_LRS"
+    container_name: "test-IaC-Ansible-GitHubActionsr"
+    container_access_type: "private"
   tasks:
-    - name: Print a message
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+        tags:
+          environment: dev
+          dept: it
+          project: test
+      register: rg
+
+    - name: Create a storage account
+      azure_rm_storageaccount:
+        resource_group: "{{ resource_group }}"
+        name: "{{ storage_account }}"
+        account_type: "{{ account_type }}"
+        location: "{{ location }}"
+        tags:
+          environment: dev
+          dept: it
+          project: test
+      register: sa
+
+    - name: Create a storage container
+      azure_rm_storagecontainer:
+        resource_group: "{{ resource_group }}"
+        storage_account: "{{ storage_account }}"
+        name: "{{ container_name }}"
+        container_access_type: "{{ container_access_type }}"
+        state: present
+      register: sc
+
+    - name: Print the resource group
       debug:
-        msg: "Ansible is working correctly!"
+        var: rg
+
+    - name: Print the storage account
+      debug:
+        var: sa
+
+    - name: Print the storage container
+      debug:
+        var: sc
+
