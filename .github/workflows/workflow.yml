@@ -32,6 +32,8 @@ jobs:
       # Deploy the terraform template in vm.tf to create a new virtual machine using hashicorp/setup-terraform@v1
       - name: Terraform Init
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
       - name: Terraform Run
         run: |
           terraform init ./Code
