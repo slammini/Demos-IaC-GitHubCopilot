@@ -29,22 +29,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy the terraform template in vm.tf to create a new vm use setup-terraform action
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Initialize Terraform
+      # Deploy the terraform template in vm.tf
       - name: Terraform Init
         run: terraform init ./Code
+
       - name: Terraform Plan
         run: terraform plan ./Code
+
       - name: Terraform Apply
         run: terraform apply -auto-approve ./Code
-
-
-
 
 
 
