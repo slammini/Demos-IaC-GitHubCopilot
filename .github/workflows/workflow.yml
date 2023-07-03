@@ -48,17 +48,6 @@ jobs:
           ansible-galaxy collection install community.azure
           ansible-galaxy collection install community.general
           ansible-galaxy collection install azure.azcollection
-          ansible-galaxy collection install azure.azcollection.azure_rm_storageaccount
-          ansible-galaxy collection install azure.azcollection.azure_rm_resource
-          ansible-galaxy collection install azure.azcollection.azure_rm_network
-          ansible-galaxy collection install azure.azcollection.azure_rm_compute
-          ansible-galaxy collection install azure.azcollection.azure_rm_security
-          ansible-galaxy collection install azure.azcollection.azure_rm_keyvault
-          ansible-galaxy collection install azure.azcollection.azure_rm_containerinstance
-          ansible-galaxy collection install azure.azcollection.azure_rm_containerregistry
-          ansible-galaxy collection install azure.azcollection.azure_rm_dns
-          ansible-galaxy collection install azure.azcollection.azure_rm_eventgrid
-          ansible-galaxy collection install azure.azcollection.azure_rm_eventhub
           
       # Run the ansible playbook to create an Azure storage account
       - name: Run Ansible Playbook
