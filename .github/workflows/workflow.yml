@@ -32,10 +32,10 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.14.7
-      - run: terraform init
-      - run: terraform plan
-      - run: terraform apply -auto-approve
-      
+      - run: terraform init ./Code
+      - run: terraform plan ./Code
+      - run: terraform apply -auto-approve ./Code
+
 
 
 
