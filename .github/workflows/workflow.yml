@@ -27,15 +27,16 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+     
       
       # Deploy the terraform template in vm.tf to create a new virtual machine using hashicorp/setup-terraform@v1
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.14.7
       - run: terraform init ./Code
-      - run: terraform plan -out ./plan.out ./Code
-      - run: terraform apply -auto-approve ./plan.out
-          
+      - run: terraform plan -out solution.plan ./Code
+      - run: terraform apply solution.plan
+      
 
 
 
