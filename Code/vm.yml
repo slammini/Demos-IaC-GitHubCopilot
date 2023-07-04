@@ -24,51 +24,6 @@
     image_sku: "18.04-LTS"
     image_version: "latest"
   tasks:
-  - name: Create a resource group
-    azure_rm_resourcegroup:
-      name: "{{ resource_group }}"
-      location: "{{ location }}"
-  - name: Create a virtual network
-    azure_rm_virtualnetwork:
-      resource_group: "{{ resource_group }}"
-      name: "{{ vnet_name }}"
-      address_prefixes_cidr:
-      - "{{ vnet_address_prefix }}"
-  - name: Create a subnet
-    azure_rm_subnet:
-      resource_group: "{{ resource_group }}"
-      name: "{{ subnet_name }}"
-      address_prefix_cidr: "{{ subnet_address_prefix }}"
-      virtual_network: "{{ vnet_name }}"
-  - name: Create a public IP address
-    azure_rm_publicipaddress:
-      resource_group: "{{ resource_group }}"
-      allocation_method: Static
-      name: "{{ public_ip_name }}"
-  - name: Create a network interface
-    azure_rm_networkinterface:
-      resource_group: "{{ resource_group }}"
-      name: "{{ nic_name }}"
-      virtual_network: "{{ vnet_name }}"
-      subnet_name: "{{ subnet_name }}"
-      public_ip_name: "{{ public_ip_name }}"
-  - name: Create a virtual machine
-    azure_rm_virtualmachine:
-      resource_group: "{{ resource_group }}"
-      name: "{{ vm_name }}"
-      vm_size: "{{ vm_size }}"
-      admin_username: "{{ admin_username }}"
-      ssh_password_enabled: False
-      ssh_public_keys:
-      - path: /home/{{ admin_username }}/.ssh/authorized_keys
-        key_data: "{{ ssh_public_key }}"
-      network_interfaces: "{{ nic_name }}"
-      image:
-        offer: "{{ image_offer }}"
-        publisher: "{{ image_publisher }}"
-        sku: "{{ image_sku }}"
-        version: "{{ image_version }}"
-
 
         
 
